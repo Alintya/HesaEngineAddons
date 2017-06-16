@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using HesaEngine.SDK;
-using HesaEngine.SDK.Args;
+using HesaEngine.SDK.Enums;
 using HesaEngine.SDK.GameObjects;
 using SharpDX;
 
@@ -25,13 +20,15 @@ namespace AntiAFK
         public string Author => "Mystery";
 
         private readonly Random Random = new Random();
-
+        
         private static Menu RootMenu { get; set; }
         private static bool IsEnabled => RootMenu["enabled"].GetValue<bool>();
         private static int RefreshRate => RootMenu["refresh"].GetValue<int>() * 1000;
+        private static bool Randomize => RootMenu["randomize"].GetValue<bool>();
+        private static int RandomizeFactor => RootMenu["randomizeAmount"].GetValue<int>();
 
         //private bool IsAFK { get; set; } = false;
-        
+
         private int _lastActionTick;
         private int _lastTick;
 
@@ -70,7 +67,6 @@ namespace AntiAFK
         {
             if (!IsEnabled)
                 return;
-
             if ((Game.GameTimeTickCount - _lastTick) < _tickLimit) 
                 return;
 
@@ -78,11 +74,13 @@ namespace AntiAFK
 
             if (Game.GameTimeTickCount - _lastActionTick > RefreshRate)
             {
-                Orbwalker.MoveTo(ObjectManager.Player.Position + Random.NextVector3(-Vector3.One, Vector3.One));
-                Logger.Log("Moved champ");
+                Orbwalker.MoveTo(ObjectManager.Player.Position + 
+                    (Randomize ? Random.NextVector3(-RandomizeFactor * Vector3.One, RandomizeFactor * Vector3.One) : Vector3.Zero));
+                Logger.Log("Issued move command");
             }
                 
         }
+
 /*
         private void OnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
@@ -101,6 +99,9 @@ namespace AntiAFK
             RootMenu = Menu.AddMenu("AntiAFK");
             RootMenu.Add(new MenuCheckbox("enabled", "Enabled", true));
             RootMenu.Add(new MenuSlider("refresh", "Refresh in Secs", 30, 179, 60));
+            RootMenu.AddSeparator("");
+            RootMenu.Add(new MenuCheckbox("randomize", "Randomize move destination"));
+            RootMenu.Add(new MenuSlider("randomizeAmount", "Randomization Range", 1, 100, 1));
 
         }
     }
