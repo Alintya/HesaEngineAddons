@@ -17,7 +17,8 @@ namespace AntiAFK
 
         public static string GetVersion()
         {
-            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string ver = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            return ver.Remove(ver.LastIndexOf('.'));
         }
 
     }
