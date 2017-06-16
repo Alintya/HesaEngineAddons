@@ -24,7 +24,7 @@ namespace AntiAFK
         public string Version => Utils.GetVersion();
         public string Author => "Mystery";
 
-        private Random Random = new Random();
+        private readonly Random Random = new Random();
 
         private static Menu RootMenu { get; set; }
         private static bool IsEnabled => RootMenu["enabled"].GetValue<bool>();
@@ -49,8 +49,18 @@ namespace AntiAFK
             
 
             // Event subscriptions
-            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
-            Obj_AI_Base.OnIssueOrder += OnIssueOrder;
+            Obj_AI_Base.OnProcessSpellCast += (x, y) =>
+            {
+                if (x.IsMe)
+                    _lastActionTick = Game.GameTimeTickCount;
+            };
+
+            Obj_AI_Base.OnIssueOrder += (x, y) =>
+            {
+                if (x.IsMe)
+                    _lastActionTick = Game.GameTimeTickCount;
+            };
+
             Game.OnTick += OnTick;
 
             Utils.PrintChat($"{this.Name} v{this.Version} by {this.Author} loaded!");
@@ -73,7 +83,7 @@ namespace AntiAFK
             }
                 
         }
-
+/*
         private void OnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
             if (sender.IsMe)
@@ -85,7 +95,7 @@ namespace AntiAFK
             if (sender.IsMe)
                 _lastActionTick = Game.GameTimeTickCount;
         }
-
+*/
         private static void LoadMenu()
         {
             RootMenu = Menu.AddMenu("AntiAFK");
