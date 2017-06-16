@@ -12,7 +12,7 @@ namespace JungleTimers
     {
         public static void PrintChat(string msg)
         {
-            Chat.Print("<font color = \"#ffdead\">Jungle Timers:</font> <font color = \"#ffffff\">" + msg + "</font>");
+            Chat.Print("<font color = \"#ffdead\">[Jungle Timers]:</font> <font color = \"#ffffff\">" + msg + "</font>");
         }
 
         public static string GetVersion()

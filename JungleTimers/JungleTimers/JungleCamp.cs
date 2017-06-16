@@ -15,7 +15,17 @@ namespace JungleTimers
     {
         public bool Dead { get; set; }
         public GameMapId MapID { get; set; }
-        public Vector2 MinimapPosition => TacticalMap.WorldToMinimap(Position); 
+
+        public Vector2 MinimapPosition
+        {
+            get
+            {
+                // Well, dont ask
+                Vector3 tmp = new Vector3(Position.X, Position.Z, Position.Y);
+                return TacticalMap.WorldToMinimap(tmp);
+            }
+        }
+
         public string[] MobNames { get; set; }
         public int NextRespawnTime { get; set; }
         public List<string> ObjectsAlive { get; set; }
