@@ -100,7 +100,7 @@ namespace AntiAFK
         {
             RootMenu = Menu.AddMenu("AntiAFK");
             RootMenu.Add(new MenuCheckbox("enabled", "Enabled", true));
-            RootMenu.Add(new MenuSlider("refresh", "Refresh in Secs", 30, 150, 60));
+            RootMenu.Add(new MenuSlider("refresh", "Refresh in Secs", 30, 179, 60));
 
         }
     }
