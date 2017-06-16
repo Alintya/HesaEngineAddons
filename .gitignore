@@ -16,10 +16,12 @@
 [Rr]elease/
 ![Rr]elease/*.dll
 [Rr]eleases/
+![Rr]eleases/*.dll
 x64/
 x86/
 bld/
 [Bb]in/
+![Bb]in/Release/*.dll
 [Oo]bj/
 [Ll]og/
 

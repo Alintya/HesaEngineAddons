@@ -23,7 +23,7 @@ namespace Devvy
         }
 
         public string Name => "Devvy";
-        public string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public string Version => Utils.GetVersion();
         public string Author => "Mystery";
 
         private static Menu RootMenu { get; set; }
@@ -174,12 +174,10 @@ namespace Devvy
                     //Drawing.DrawText(baseObject.Position.WorldToScreen() + new Vector2(0, row), Color.NavajoWhite, "None");
                     foreach (var buff in baseObject.Buffs.Where(o => o.IsValid()))
                     {
-
                         var endTime = Math.Max(0, buff.EndTime - Game.Time);
                         Drawing.DrawText(baseObject.Position.WorldToScreen() + new Vector2(0, row), Color.NavajoWhite,
-                            string.Format("DisplayName: {0} | Name: {1} | Caster: {2} | Count: {4} | RemainingTime: {5}", buff.DisplayName, buff.Name, buff.Caster.Name, buff.Count,
-                                endTime > 1000 ? "Infinite" : Convert.ToString(endTime, CultureInfo.InvariantCulture), buff.Name));
-
+                            string.Format("DisplayName: {0} | Name: {1} | Caster: {2} | Count: {3} | RemainingTime: {4}", buff.DisplayName, buff.Name, buff.Caster.Name, buff.Count,
+                                endTime > 1000 ? "Infinite" : Convert.ToString(endTime, CultureInfo.InvariantCulture)));
 
                         row += height;
                     }

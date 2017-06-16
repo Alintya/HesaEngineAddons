@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using HesaEngine.SDK;
 using HesaEngine.SDK.Enums;
 using HesaEngine.SDK.GameObjects;
@@ -8,7 +9,7 @@ using SharpDX;
 
 namespace JungleTimers
 {
-    public class Class1 : IScript
+    public class JungleTimers : IScript
     {
         public void OnInitialize()
         {
@@ -16,7 +17,7 @@ namespace JungleTimers
         }
 
         public string Name => "Jungle Timers";
-        public string Version => "0.1";
+        public string Version => Utils.GetVersion();
         public string Author => "Mystery";
 
 
@@ -64,9 +65,10 @@ namespace JungleTimers
         {
             if (Root["enabled"].GetValue<bool>() == false)
                 return;
-
+            
             foreach (var camp in DeadJungleCamps.Where(x => x.NextRespawnTime - Environment.TickCount > 0))
             {
+                Drawing.DrawText(new Vector2(0, 0), Color.Red, "TEST");
                 var timeSpan = TimeSpan.FromMilliseconds(camp.NextRespawnTime - Environment.TickCount);
 
                 var text = timeSpan.ToString(@"m\:ss");
@@ -78,6 +80,14 @@ namespace JungleTimers
 
         private static void GameObject_OnDelete(GameObject sender, EventArgs args)
         {
+            if (sender.Name.StartsWith("SRU"))
+            {
+                Logger.Log("OnDelete: " + sender.Name);
+                Logger.Log(sender.ObjectType.ToString());
+            }
+
+            if (Root["enabled"].GetValue<bool>() == false)
+                return;
             if (sender.ObjectType != GameObjectType.obj_AI_Minion)
                 return;
 
@@ -99,6 +109,14 @@ namespace JungleTimers
 
         private static void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
+            if (sender.Name.StartsWith("SRU"))
+            {
+                Logger.Log("OnCreate: " + sender.Name);
+                Logger.Log(sender.ObjectType.ToString());
+            }
+            
+            if (Root["enabled"].GetValue<bool>() == false)
+                return;
             if (sender.ObjectType != GameObjectType.obj_AI_Minion)
                 return;
 

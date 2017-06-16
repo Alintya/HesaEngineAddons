@@ -34,6 +34,7 @@ namespace JungleTimers
 
             ObjectsDead = new List<string>();
             ObjectsAlive = new List<string>();
+
         }
     }
 }
