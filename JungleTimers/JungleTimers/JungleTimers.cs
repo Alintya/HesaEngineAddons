@@ -68,9 +68,7 @@ namespace JungleTimers
             
             foreach (var camp in DeadJungleCamps.Where(x => x.NextRespawnTime - Environment.TickCount > 0))
             {
-                Drawing.DrawText(new Vector2(0, 0), Color.Red, "TEST");
                 var timeSpan = TimeSpan.FromMilliseconds(camp.NextRespawnTime - Environment.TickCount);
-
                 var text = timeSpan.ToString(@"m\:ss");
                 var pos = new Vector2((int)camp.MinimapPosition.X, (int)camp.MinimapPosition.Y);
 
@@ -80,12 +78,8 @@ namespace JungleTimers
 
         private static void GameObject_OnDelete(GameObject sender, EventArgs args)
         {
-            if (sender.Name.StartsWith("SRU"))
-            {
-                Logger.Log("OnDelete: " + sender.Name);
-                Logger.Log(sender.ObjectType.ToString());
-            }
-
+            if (!sender.Name.StartsWith(Game.MapId == GameMapId.SummonersRift ? "SRU" : "TT"))
+                return;
             if (Root["enabled"].GetValue<bool>() == false)
                 return;
             if (sender.ObjectType != GameObjectType.obj_AI_Minion)
@@ -109,12 +103,8 @@ namespace JungleTimers
 
         private static void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
-            if (sender.Name.StartsWith("SRU"))
-            {
-                Logger.Log("OnCreate: " + sender.Name);
-                Logger.Log(sender.ObjectType.ToString());
-            }
-            
+            if (!sender.Name.StartsWith(Game.MapId == GameMapId.SummonersRift ? "SRU" : "TT"))
+                return;
             if (Root["enabled"].GetValue<bool>() == false)
                 return;
             if (sender.ObjectType != GameObjectType.obj_AI_Minion)
