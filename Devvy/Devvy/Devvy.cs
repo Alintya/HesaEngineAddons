@@ -47,9 +47,8 @@ namespace Devvy
         {
             Logger.Log("Loading Devvy");
 
-            LoadMenu();
             // Init
-
+            LoadMenu();
 
             // Event subscriptions
             Drawing.OnDraw += OnDraw;
