@@ -99,7 +99,7 @@ namespace AntiAFK
             RootMenu = Menu.AddMenu("AntiAFK");
             RootMenu.Add(new MenuCheckbox("enabled", "Enabled", true));
             RootMenu.Add(new MenuSlider("refresh", "Refresh in Secs", 30, 179, 60));
-            RootMenu.AddSeparator("");
+            RootMenu.AddSeparator("AFK warning pops after 3mins");
             RootMenu.Add(new MenuCheckbox("randomize", "Randomize move destination"));
             RootMenu.Add(new MenuSlider("randomizeAmount", "Randomization Range", 1, 100, 1));
 

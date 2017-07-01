@@ -59,4 +59,7 @@
     <Compile Include="Ward.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)/../Binaries/$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
