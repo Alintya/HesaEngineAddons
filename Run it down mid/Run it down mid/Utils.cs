@@ -16,7 +16,10 @@ namespace Run_it_down_mid
             return ver.Remove(ver.LastIndexOf('.'));
         }
 
-
+        public static string GetFullVersion()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        }
     }
 
     public static class MenuExtension
