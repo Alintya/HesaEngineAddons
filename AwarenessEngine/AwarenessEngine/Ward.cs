@@ -25,22 +25,31 @@ namespace AwarenessEngine
         Red
     }
 
-    public class Ward
+    public abstract class Ward
     {
+        string FriendlyName { get; }
+        string BaseSkinName { get; }
+        string DetectingBuffName { get; }
+        string DetectingSpellCastName { get; }
+        string DetectingObjectName { get; }
+
+        public Type Type { get; }
         public const int Radius = 65;
 
         private static readonly Vector2 HealthBarSize = new Vector2(64, 6);
+
         private static readonly RectangleF HealthBar = new RectangleF(-HealthBarSize.X / 2, -HealthBarSize.Y / 2, HealthBarSize.X, HealthBarSize.Y);
 
         private const int HealthBarBorderWidth = 1;
         private const int HealthBarPadding = 2;
         private static readonly Color HealthBarBackgroundColor = Color.Black;
-        private static readonly Dictionary<GameObjectTeam, Tuple<Color, Color>> HealthBarColors = new Dictionary<GameObjectTeam, Tuple<Color, Color>>
-        {
-            { GameObjectTeam.Order, new Tuple<Color, Color>(Color.GreenYellow, Color.AntiqueWhite) },
-            { GameObjectTeam.Chaos, new Tuple<Color, Color>(Color.OrangeRed, Color.AntiqueWhite) }
-        };
 
+        private static readonly Dictionary<GameObjectTeam, Tuple<Color, Color>> HealthBarColors =
+            new Dictionary<GameObjectTeam, Tuple<Color, Color>>
+            {
+                {GameObjectTeam.Order, new Tuple<Color, Color>(Color.GreenYellow, Color.AntiqueWhite)},
+                {GameObjectTeam.Chaos, new Tuple<Color, Color>(Color.OrangeRed, Color.AntiqueWhite)}
+            };
 
 
         #region Constructor Properties
@@ -48,11 +57,7 @@ namespace AwarenessEngine
         public AIHeroClient Caster { get; private set; }
         public Obj_AI_Base Handle { get; set; }
         public Vector3 FakePosition { get; private set; }
-        public IWard WardInfo { get; private set; }
-        public Type WardType
-        {
-            get { return WardInfo.Type; }
-        }
+
         public int Duration { get; private set; }
         public int CreationTime { get; private set; }
 
@@ -64,29 +69,35 @@ namespace AwarenessEngine
         {
             get { return Handle != null ? Handle.Position : FakePosition; }
         }
+
         public Vector2 ScreenPosition
         {
             get { return Handle != null ? Handle.Position.WorldToScreen() : FakePosition.WorldToScreen(); }
         }
+
         public Vector2 MinimapPosition
         {
             get { return Handle != null ? Handle.Position.WorldToMinimap() : FakePosition.WorldToMinimap(); }
         }
+
         public bool IsVisible
         {
             get { return Handle != null && Handle.IsHPBarRendered; }
         }
+
         private GameObjectTeam _team;
+
         public GameObjectTeam Team
         {
             get => Handle?.Team ?? _team;
             set => _team = value;
         }
+
         public float MaxHealth
         {
             get
             {
-                switch (WardType)
+                switch (Type)
                 {
                     case Type.BlueTrinket:
                         return 1;
@@ -105,3 +116,4 @@ namespace AwarenessEngine
         private Drawing.Text TextHandle { get; set; }
 
     }
+}

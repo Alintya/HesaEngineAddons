@@ -12,19 +12,25 @@ namespace AwarenessEngine.Plugins
     {
         public string Name => "Ward Tracker";
 
-        public bool Enabled { get; set; }
+        public bool Initialized { get; set; }
 
         public Menu Menu { get; set; }
 
-        public static Dictionary<Ward.Type, MenuCheckBox> EnabledWards { get; private set; }
+        public static Dictionary<Type, MenuCheckbox> EnabledWards { get; private set; }
         private static readonly List<Obj_AI_Base> WardsPlaced = new List<Obj_AI_Base>();
-        public static Ward.PinkColors PinkColor { get; private set; }
+        public static PinkColors PinkColor { get; private set; }
 
         public void InitializePlugin()
         {
-            if (!Enabled)
+            if (Initialized)
                 return;
             // Init
+        }
+
+        public void UnloadPlugin()
+        {
+            Menu.Remove();
+            Initialized = false;
         }
     }
 

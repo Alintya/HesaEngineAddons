@@ -11,10 +11,12 @@ namespace AwarenessEngine
     {
         string Name { get; }
 
-        bool Enabled { get; set; }
+        bool Initialized { get; set; }
 
         Menu Menu { get; set; }
 
         void InitializePlugin();
+
+        void UnloadPlugin();
     }
 }

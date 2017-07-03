@@ -7,20 +7,17 @@ using HesaEngine.SDK;
 
 namespace AwarenessEngine.Plugins
 {
-    class CooldownTracker : IPlugin
+    class CloneRevealer : IPlugin
     {
-        public string Name => "Cooldown Tracker";
-
+        public string Name => "Clone Revealer";
         public bool Initialized { get; set; }
-
         public Menu Menu { get; set; }
 
         public void InitializePlugin()
         {
-            if(Initialized)
+            if (Initialized)
                 return;
 
-            // Init
             Menu = AwarenessEngine.RootMenu.AddSubMenu(Name);
 
             Initialized = true;

@@ -26,4 +26,28 @@ namespace AwarenessEngine
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
     }
+
+    public static class MenuExtension
+    {
+        public static bool GetCheckbox(this Menu c, string name)
+        {
+            return c.Get<MenuCheckbox>(name).Checked;
+        }
+
+        public static int GetSlider(this Menu c, string name)
+        {
+            return c.Get<MenuSlider>(name).CurrentValue;
+        }
+
+        public static int GetCombobox(this Menu c, string name)
+        {
+            return c.Get<MenuCombo>(name).CurrentValue;
+        }
+
+        // TODO: overload to remove components of c
+        public static void Remove(this Menu c)
+        {
+            Menu.Remove(c);
+        }
+    }
 }

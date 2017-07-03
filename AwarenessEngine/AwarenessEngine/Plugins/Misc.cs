@@ -12,12 +12,12 @@ namespace AwarenessEngine.Plugins
     {
         public string Name => "Misc";
 
-        public bool Enabled { get; set; }
+        public bool Initialized { get; set; }
         public Menu Menu { get; set; }
 
         public void InitializePlugin()
         {
-            if (!Enabled)
+            if (Initialized)
                 return;
 
             // Init
@@ -25,7 +25,16 @@ namespace AwarenessEngine.Plugins
             Menu.Add(new MenuCheckbox("recallEnabled", "Recall Tracker"));
 
             // Event subscriptions
-            
+
+
+            Initialized = true;
+        }
+
+        public void UnloadPlugin()
+        {
+            Menu.Remove();
+
+            Initialized = false;
         }
     }
 }
