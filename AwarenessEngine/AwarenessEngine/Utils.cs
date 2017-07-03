@@ -49,5 +49,20 @@ namespace AwarenessEngine
         {
             Menu.Remove(c);
         }
+
+        public static void Remove(this Menu c, MenuElement[] menuElements)
+        {
+            throw new NotImplementedException();
+
+            foreach (var elem in menuElements)
+            {
+                // la remova hesa
+            }
+        }
+
+        public static void Remove(this MenuElement e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
