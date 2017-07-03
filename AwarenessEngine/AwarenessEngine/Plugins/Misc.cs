@@ -32,7 +32,7 @@ namespace AwarenessEngine.Plugins
 
         public void UnloadPlugin()
         {
-            Menu.Remove();
+            Menu?.Remove();
 
             Initialized = false;
         }

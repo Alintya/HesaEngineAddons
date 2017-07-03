@@ -18,16 +18,27 @@ namespace AwarenessEngine.Plugins
             if (Initialized)
                 return;
 
+            // Init
             Menu = AwarenessEngine.RootMenu.AddSubMenu(Name);
+
+            // Even subscriptions
+            Drawing.OnDraw += Drawing_OnDraw;
 
             Initialized = true;
         }
 
         public void UnloadPlugin()
         {
-            Menu.Remove();
+            Menu?.Remove();
+
+            Drawing.OnDraw -= Drawing_OnDraw;
 
             Initialized = false;
+        }
+
+        private void Drawing_OnDraw(EventArgs args)
+        {
+
         }
     }
 }

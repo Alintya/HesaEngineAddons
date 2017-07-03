@@ -25,11 +25,12 @@ namespace AwarenessEngine.Plugins
             if (Initialized)
                 return;
             // Init
+            Menu = AwarenessEngine.RootMenu.AddSubMenu(Name);
         }
 
         public void UnloadPlugin()
         {
-            Menu.Remove();
+            Menu?.Remove();
             Initialized = false;
         }
     }
