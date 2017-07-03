@@ -44,6 +44,34 @@ namespace AwarenessEngine
             return c.Get<MenuCombo>(name).CurrentValue;
         }
 
+
+        public static void AddCheckbox(this Menu c, string name, bool enabled = false)
+        {
+            c.Add(new MenuCheckbox(name, name, enabled));
+        }
+
+        public static void AddCheckbox(this Menu c, string name, string displyText, bool enabled = false)
+        {
+            c.Add(new MenuCheckbox(name, displyText, enabled));
+        }
+
+        public static void AddSlider(this Menu c, string name, Slider slider)
+        {
+            c.Add(new MenuSlider(name, name, slider));
+        }
+
+        public static void AddSlider(this Menu c, string name, string displayText, Slider slider)
+        {
+            c.Add(new MenuSlider(name, displayText, slider));
+        }
+
+        public static void AddSlider(this Menu c, string name, int max = 100, int min = 0, int cuurentval = 0)
+        {
+            c.Add(new MenuSlider(name, name, min, max, cuurentval));
+        }
+
+
+
         // TODO: overload to remove components of c
         public static void Remove(this Menu c)
         {
