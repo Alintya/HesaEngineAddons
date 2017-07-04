@@ -29,6 +29,9 @@ namespace AwarenessEngine.Plugins
 
         public void UnloadPlugin()
         {
+            if (!Initialized)
+                return;
+
             Menu?.Remove();
 
             Initialized = false;

@@ -48,14 +48,11 @@ namespace AwarenessEngine.Plugins
             Initialized = true;
         }
 
-        private void Game_OnUpdate()
-        {
-            if (ActiveClones.Count > 0)
-                ActiveClones.RemoveAll(x => !x.IsValid() || x.IsDead);
-        }
-
         public void UnloadPlugin()
         {
+            if (!Initialized)
+                return;
+
             Menu?.Remove();
 
             Game.OnUpdate += Game_OnUpdate;
@@ -65,6 +62,12 @@ namespace AwarenessEngine.Plugins
             Initialized = false;
         }
 
+
+        private void Game_OnUpdate()
+        {
+            if (ActiveClones.Count > 0)
+                ActiveClones.RemoveAll(x => !x.IsValid() || x.IsDead);
+        }
 
         private void GameObject_OnCreate(GameObject sender, EventArgs args)
         {

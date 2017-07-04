@@ -52,13 +52,16 @@ namespace AwarenessEngine.Plugins
             Game.OnTick += Game_OnTick;
             Obj_AI_Base.OnTeleport += Base_OnTeleport;
             GameObject.OnCreate += GameObject_OnCreate;
-            Drawing.OnDraw += Drawing_OnDraw;
+            //Drawing.OnDraw += Drawing_OnDraw;
 
             Initialized = true;
         }
 
         public void UnloadPlugin()
         {
+            if (!Initialized)
+                return;
+
             Menu?.Remove();
 
             Game.OnTick -= Game_OnTick;
@@ -121,6 +124,7 @@ namespace AwarenessEngine.Plugins
 
         private void Base_OnTeleport(Obj_AI_Base sender, GameObjectTeleportEventArgs args)
         {
+            Logger.Log("On Teleport: " + sender.BaseSkinName);
             if (sender.ObjectType != GameObjectType.AIHeroClient/* || sender.IsAlly*/)
                 return;
 
