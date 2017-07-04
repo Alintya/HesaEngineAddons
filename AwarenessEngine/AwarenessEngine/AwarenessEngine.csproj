@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="AwarenessEngine.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="Plugins\MapHack.cs" />
     <Compile Include="Plugins\CloneRevealer.cs" />
     <Compile Include="Plugins\CooldownTracker.cs" />
     <Compile Include="Plugins\Misc.cs" />

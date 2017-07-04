@@ -47,7 +47,8 @@ namespace AwarenessEngine
                 new CloneRevealer(),
                 new CooldownTracker(),
                 new Misc(),
-                new WardTracker()
+                new WardTracker(),
+                new MapHack()
             };
 
         }

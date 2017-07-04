@@ -22,6 +22,7 @@ namespace AwarenessEngine.Plugins
 
             // Init
             Menu = AwarenessEngine.RootMenu.AddSubMenu(Name);
+            Menu.AddSeparator("Coming soon(tm)");
 
             Initialized = true;
         }

@@ -29,6 +29,7 @@ namespace AwarenessEngine.Plugins
 
             // Init
             Menu = AwarenessEngine.RootMenu.AddSubMenu(Name);
+            Menu.AddSeparator("Coming soon(tm)");
 
             foreach (var cloneChamp in ObjectManager.Heroes.Enemies.Where(x => CloneChamps.Contains(x.Hero)))
                 CloneChampsIngame.Add(cloneChamp);

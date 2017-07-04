@@ -22,7 +22,7 @@ namespace AwarenessEngine.Plugins
 
             // Init
             Menu = AwarenessEngine.RootMenu.AddSubMenu(Name);
-            Menu.Add(new MenuCheckbox("recallEnabled", "Recall Tracker"));
+            Menu.AddSeparator("Coming soon(tm)");
 
             // Event subscriptions
 
