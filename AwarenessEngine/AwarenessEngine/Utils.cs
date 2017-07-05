@@ -71,8 +71,6 @@ namespace AwarenessEngine
         }
 
 
-
-        // TODO: overload to remove components of c
         public static void Remove(this Menu c)
         {
             Menu.Remove(c);
@@ -80,17 +78,8 @@ namespace AwarenessEngine
 
         public static void Remove(this Menu c, MenuElement[] menuElements)
         {
-            throw new NotImplementedException();
-
             foreach (var elem in menuElements)
-            {
-                // la remova hesa
-            }
-        }
-
-        public static void Remove(this MenuElement e)
-        {
-            throw new NotImplementedException();
+                c.Remove(elem);
         }
     }
 }
