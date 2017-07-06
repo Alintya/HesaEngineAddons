@@ -8,8 +8,11 @@ using HesaEngine.SDK;
 
 namespace AwarenessEngine
 {
-    public class Utils
+    public static class Utils
     {
+        public static bool DebugOutput = false;
+
+
         public static void PrintChat(string msg)
         {
             Chat.Print("<font color = \"#ffdead\">[AwarenessEngine]:</font> <font color = \"#ffffff\">" + msg + "</font>");
@@ -24,6 +27,14 @@ namespace AwarenessEngine
         public static string GetFullVersion()
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        }
+
+        public static void DebugLog(string msg)
+        {
+            if (!DebugOutput)
+                return;
+
+            Logger.Log(msg);
         }
     }
 
