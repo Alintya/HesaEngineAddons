@@ -28,8 +28,6 @@ namespace AwarenessEngine.Plugins
                 return;
 
             // Init
-            Menu = AwarenessEngine.RootMenu.AddSubMenu(Name);
-            Menu.AddSeparator("Coming soon(tm)");
 
             foreach (var cloneChamp in ObjectManager.Heroes.Enemies.Where(x => CloneChamps.Contains(x.Hero)))
                 CloneChampsIngame.Add(cloneChamp);
@@ -39,6 +37,9 @@ namespace AwarenessEngine.Plugins
                 Utils.PrintChat("No clone champs ingame");
                 this.UnloadPlugin();
             }
+
+            Menu = AwarenessEngine.RootMenu.AddSubMenu(Name);
+            Menu.AddSeparator("Coming soon(tm)");
 
             // Event subscriptions
             Game.OnUpdate += Game_OnUpdate;
