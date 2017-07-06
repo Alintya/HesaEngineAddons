@@ -13,6 +13,8 @@ namespace AwarenessEngine
         public void OnInitialize()
         {
             Game.OnGameLoaded += Game_OnGameLoaded;
+
+            Utils.DebugOutput = true;
         }
 
         public string Name => "AwarenessEngine";

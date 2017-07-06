@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,8 +52,8 @@ namespace AwarenessEngine.Plugins
             // Event subscriptions
             Game.OnTick += Game_OnTick;
             Obj_AI_Base.OnTeleport += Base_OnTeleport;
-            GameObject.OnCreate += GameObject_OnCreate;
-            //Drawing.OnDraw += Drawing_OnDraw;
+            //GameObject.OnCreate += GameObject_OnCreate;
+            Drawing.OnEndScene += Drawing_OnEndScene;
 
             Initialized = true;
         }
@@ -67,7 +68,7 @@ namespace AwarenessEngine.Plugins
             Game.OnTick -= Game_OnTick;
             Obj_AI_Base.OnTeleport -= Base_OnTeleport;
             GameObject.OnCreate -= GameObject_OnCreate;
-            Drawing.OnDraw -= Drawing_OnDraw;
+            Drawing.OnDraw -= Drawing_OnEndScene;
 
             Initialized = false;
         }
@@ -79,22 +80,33 @@ namespace AwarenessEngine.Plugins
 
             foreach (var enemy in ObjectManager.Heroes.Enemies)
             {
-                if (enemy.IsDead && !DeadChamps.Contains(enemy.NetworkId))
+                // Died
+                if (enemy.IsDead)
                 {
-                    DeadChamps.Add(enemy.NetworkId);
+                    if (!DeadChamps.Contains(enemy.NetworkId))
+                    {
+                        Utils.DebugLog(enemy.ChampionName + " died " + enemy.NetworkId);
+                        DeadChamps.Add(enemy.NetworkId);
+                        FogOfWarChamps.Remove(enemy.NetworkId);
+                    }
                     continue;
                 }
 
                 // Visible
-                if (enemy.IsHPBarRendered)
+                if (enemy.IsVisible)
                 {
-                    FogOfWarChamps.Remove(enemy.NetworkId);
+                    if (FogOfWarChamps.ContainsKey(enemy.NetworkId))
+                    {
+                        Utils.DebugLog(enemy.ChampionName + " reappeared " + enemy.NetworkId);
+                        FogOfWarChamps.Remove(enemy.NetworkId);
+                    }
                     continue;
                 }
 
                 // Respawned
-                if (!enemy.IsDead && DeadChamps.Contains(enemy.NetworkId))
+                if (DeadChamps.Contains(enemy.NetworkId))
                 {
+                    Utils.DebugLog(enemy.ChampionName + " respawned " + enemy.NetworkId);
                     DeadChamps.Remove(enemy.NetworkId);
 
                     FogOfWarChamps[enemy.NetworkId] = new LastSeenInfo
@@ -108,6 +120,7 @@ namespace AwarenessEngine.Plugins
                 // Disappeared
                 if (!FogOfWarChamps.ContainsKey(enemy.NetworkId))
                 {
+                    Utils.DebugLog(enemy.ChampionName + " disappeared " + enemy.NetworkId);
                     FogOfWarChamps[enemy.NetworkId] = new LastSeenInfo
                     {
                         LastSeenPosition = enemy.ServerPosition,
@@ -119,21 +132,24 @@ namespace AwarenessEngine.Plugins
 
                 if (elapsedTime > 0 && FogOfWarChamps.ContainsKey(enemy.NetworkId)/* && !RecallingHeroes.ContainsKey(enemy.NetworkId)*/)
                     FogOfWarChamps[enemy.NetworkId].LastSeenRange += (enemy.MovementSpeed >= 1 ? enemy.MovementSpeed : 540) * elapsedTime / 1000f;
+
+                Utils.DebugLog($"RangeUpdate for {enemy.ChampionName}: {FogOfWarChamps[enemy.NetworkId].LastSeenRange}\t @{enemy.MovementSpeed}");
             }
+            
         }
 
         private void Base_OnTeleport(Obj_AI_Base sender, GameObjectTeleportEventArgs args)
         {
-            Logger.Log("On Teleport: " + sender.BaseSkinName);
+            Utils.DebugLog("On Teleport: " + sender.BaseSkinName);
             if (sender.ObjectType != GameObjectType.AIHeroClient/* || sender.IsAlly*/)
                 return;
 
-            Logger.Log($"{sender.BaseSkinName} doing {args.SpellName}");
-            Logger.Log($"{args.EndTime}");
+            Utils.DebugLog($"{sender.BaseSkinName} doing {args.SpellName}");
+            Utils.DebugLog($"{args.EndTime}");
             /*
-            // Only check for enemy Heroes and recall teleports
             if (sender.ObjectType == GameObjectType.AIHeroClient && sender.IsEnemy && args.GetType() == args..Recall)
             {
+                
                 switch (args.Status)
                 {
                     case TeleportStatus.Start:
@@ -145,12 +161,16 @@ namespace AwarenessEngine.Plugins
                         break;
 
                     case TeleportStatus.Finish:
-                        LastSeen[sender.NetworkId] = Core.GameTickCount;
-                        LastSeenPosition[sender.NetworkId] = EnemySpawnPoint;
-                        LastSeenRange[sender.NetworkId] = 0;
+                        FogOfWarChamps[sender.NetworkId] = new LastSeenInfo
+                        {
+                            LastSeenTime = Game.GameTimeTickCount,
+                            LastSeenPosition = EnemySpawn,
+                            LastSeenRange = 0
+                        };
                         RecallingHeroes.Remove(sender.NetworkId);
                         break;
                 }
+                
             }
             */
         }
@@ -161,6 +181,7 @@ namespace AwarenessEngine.Plugins
                 return;
 
             var missile = (MissileClient)sender;
+
             if (missile.SpellCaster == null || missile.SpellCaster.ObjectType != GameObjectType.AIHeroClient ||
                 !missile.SpellCaster.IsEnemy || missile.StartPosition.IsZero)
                     return;
@@ -173,35 +194,34 @@ namespace AwarenessEngine.Plugins
             };
         }
 
-        private void Drawing_OnDraw(EventArgs args)
+
+        private void Drawing_OnEndScene(EventArgs args)
         {
             foreach (var enemy in ObjectManager.Heroes.Enemies.Where(x => !x.IsDead || x.IsInRange(EnemySpawn, 250)))
             {
-                // Get the minimap position
-                Vector2 pos = enemy.ServerPosition.WorldToMinimap();
+                if (!FogOfWarChamps.ContainsKey(enemy.NetworkId))
+                    continue;
 
-                if (FogOfWarChamps.ContainsKey(enemy.NetworkId))
+                var pos = FogOfWarChamps[enemy.NetworkId].LastSeenPosition.WorldToMinimap();
+
+
+                //var invisibleTime = (Game.GameTimeTickCount - FogOfWarChamps[enemy.NetworkId].LastSeenTime) / 1000f;
+
+                if (Menu.GetCheckbox("Draw movement circle"))
                 {
-                    pos = FogOfWarChamps[enemy.NetworkId].LastSeenPosition.WorldToMinimap();
 
-                    // Get the time being invisible in seconds
-                    var invisibleTime = (Game.GameTimeTickCount - FogOfWarChamps[enemy.NetworkId].LastSeenTime) / 1000f;
-
-                    // Predicted movement circle
-                    if (Menu.GetCheckbox("Draw movement circle"))
+                    var radius = FogOfWarChamps[enemy.NetworkId].LastSeenRange;
+                    
+                    if (radius < DisableRange)
                     {
-                        // Get the radius the champ could have walked
-                        var radius = FogOfWarChamps.ContainsKey(enemy.NetworkId) ? FogOfWarChamps[enemy.NetworkId].LastSeenRange : (enemy.MovementSpeed > 1 ? enemy.MovementSpeed : 540) * invisibleTime;
-
-                        if (radius < DisableRange * 10)
-                        {
-                            Drawing.DrawCircle(pos, (int)radius);
-                        }
+                        Drawing.DrawCircle(pos - new Vector2(radius/2), (int)radius);
                     }
+                    
+                }
 
-                    // Draw the minimap icon
-                    //ChampionSprites[enemy.Hero].Draw(pos + MinimapIconOffset);
-                    /*
+                // Draw the minimap icon
+                //ChampionSprites[enemy.Hero].Draw(pos + MinimapIconOffset);
+                /*
                     // Draw the time being invisible
                     if (DrawInvisibleTime.CurrentValue && invisibleTime >= DelayInvisibleTime.CurrentValue)
                     {
@@ -210,7 +230,6 @@ namespace AwarenessEngine.Plugins
                         TimerText.Draw(text, TimerText.Color, pos - (new Vector2(bounding.Width, bounding.Height) / 2) + 1);
                     }
                     */
-                }
                 /*
                 // Draw recall circle
                 if (DrawRecallCircle.CurrentValue && RecallingHeroes.ContainsKey(enemy.NetworkId))
