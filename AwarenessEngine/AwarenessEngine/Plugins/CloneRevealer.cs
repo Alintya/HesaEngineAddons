@@ -55,8 +55,8 @@ namespace AwarenessEngine.Plugins
 
             Menu?.Remove();
 
-            Game.OnUpdate += Game_OnUpdate;
-            GameObject.OnCreate += GameObject_OnCreate;
+            Game.OnUpdate -= Game_OnUpdate;
+            GameObject.OnCreate -= GameObject_OnCreate;
             Drawing.OnDraw -= Drawing_OnDraw;
 
             Initialized = false;
